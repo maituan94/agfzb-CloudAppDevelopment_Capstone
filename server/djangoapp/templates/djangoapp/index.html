@@ -22,7 +22,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="https://placeholder.pics/svg/200x50/FFFFFF-FFFC9C/0A0A0A/Dealership%20Review" alt="..." height="36">
+                <img src="https://placeholder.pics/svg/200x50/FFFFFF-FFFC9C/0A0A0A/Dealership%20Review" alt="..."
+                    height="36">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -71,9 +72,76 @@
     <!--Add a dealer table here -->
     <div class="container">
         {% block content %}
-        <h1>Home Page</h1>
+        <h1 class="text-center">Dealers</h1>
+        <table class="table" id="table">
+            <thead>
+                <tr>
+                    <th data-field="id">ID</th>
+                    <th data-field="dealername">Dealer Name</th>
+                    <th data-field="city">City</th>
+                    <th data-field="address">Adderss</th>
+                    <th data-field="zip">ZIP</th>
+                    <th data-field="state"> State <span><select name="states" id="state-select">
+                                <option value="all">All</option>
+                                {% for state in states %}
+                                <option value='{{state}}'>{{state}}</option>
+                                {% endfor %}
+                            </select></th></span>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                {% for dealer in dealerships %}
+                <tr>
+                    <td>{{ dealer.id }}</td>
+                    <td>
+                        <a href="{% url 'djangoapp:dealer_reviews' dealer.id %}">{{ dealer.full_name }}</a>
+                    </td>
+                    <td>{{ dealer.city }}</td>
+                    <td>{{ dealer.address }}</td>
+                    <td>{{ dealer.zip }}</td>
+                    <td>{{ dealer.state }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
         {% endblock %}
     </div>
 </body>
+{% block script %}
+<script>
+    var dealerships = []
+    {% for dealer in dealerships %}
+    var dealer = {}
+    dealer.id = "{{ dealer.id }}"
+    dealer.full_name = "{{dealer.full_name}}"
+    dealer.city = "{{dealer.city}}"
+    dealer.address = "{{dealer.address}}"
+    dealer.zip = "{{dealer.zip}}"
+    dealer.state = "{{dealer.state}}"
+    dealerships.push(dealer)
+    {% endfor %}
+    console.log(dealerships)
+    $('document').ready(function () {
+
+        const filterDealer = (selectedValue) => {
+            if (!selectedValue) return []
+            if (selectedValue === "all") {
+                return dealerships
+            } else {
+                return dealerships.filter((dl) => dl.state === selectedValue)
+            }
+        }
+        $('#state-select').on('change', function () {
+            const listDealership = filterDealer(this.value)
+            if (listDealership.length > 0) {
+                $("#table-body").html("")
+                listDealership.forEach((dl) => {
+                    $("#table-body").append(`<tr><td>${dl.id}</td><td><a href="/djangoapp/review/${dl.id}">${dl.full_name}</a></td><td>${dl.city}</td><td>${dl.address}</td><td>${dl.zip}</td><td>${dl.state}</td></tr>`)
+                })
+            }
+        });
+    });
+</script>
+{% endblock %}
 
 </html>
