@@ -73,7 +73,7 @@
     <div class="container">
         {% block content %}
         <h1 class="text-center">Dealers</h1>
-        <table class="table" id="table">
+        <table class="table" id="table" data-filter-control="true">
             <thead>
                 <tr>
                     <th data-field="id">ID</th>
@@ -81,12 +81,13 @@
                     <th data-field="city">City</th>
                     <th data-field="address">Adderss</th>
                     <th data-field="zip">ZIP</th>
-                    <th data-field="state"> State <span><select name="states" id="state-select">
+                    <th data-field="state" data-filter-control="select">State</th>
+                    <!-- <th data-field="state"> State <span><select name="states" id="state-select">
                                 <option value="all">All</option>
                                 {% for state in states %}
                                 <option value='{{state}}'>{{state}}</option>
                                 {% endfor %}
-                            </select></th></span>
+                            </select></th></span> -->
                 </tr>
             </thead>
             <tbody id="table-body">
@@ -109,6 +110,11 @@
 </body>
 {% block script %}
 <script>
+    $(function () {
+        $('#table').bootstrapTable()
+    })
+</script>
+<!-- <script>
     var dealerships = []
     {% for dealer in dealerships %}
     var dealer = {}
@@ -141,7 +147,7 @@
             }
         });
     });
-</script>
+</script> -->
 {% endblock %}
 
 </html>
